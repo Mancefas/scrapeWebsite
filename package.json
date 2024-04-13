@@ -8,5 +8,11 @@
   },
   "keywords": [],
   "author": "Mantvydas",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "puppeteer": "^19.11.1"
+  },
+  "type": "module",
+  "types": "module"
 }
