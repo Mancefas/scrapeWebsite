@@ -15,10 +15,17 @@ export const scrapeTableData = async (url) => {
   await page.goto(url, {
     waitUntil: "domcontentloaded",
   });
+
+  // open select and press 100 option
+  await page.waitForSelector('[name="datatableOperadores_length"]');
+  await page.$('[name="datatableOperadores_length"]')
+  await page.select('[name="datatableOperadores_length"]', '100');
+  
+  //wait for 100 rows
   await page.waitForFunction(() => {
     const tbody = document.querySelector("#datatableOperadores tbody");
     const childrenAmount = tbody.children.length;
-    return childrenAmount !== 0;
+    return childrenAmount === 100;
   });
 
   // Get table data
@@ -31,6 +38,5 @@ export const scrapeTableData = async (url) => {
   await browser.close();
 
   // return data as array
-  // return tableRows
-  console.log(tableRows)
+  return tableRows
 };
