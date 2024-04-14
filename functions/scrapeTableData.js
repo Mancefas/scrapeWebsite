@@ -1,10 +1,9 @@
 import puppeteer from "puppeteer";
-import { writeFileSync, appendFile } from "fs";
-import { writeFile } from "fs/promises";
+import { writeToTXT } from "./writeTotxtFile.js";
 
 export const scrapeTableData = async (url) => {
   const tableData = [];
-  const nextButtonToPress = 1;
+  const nextButtonToPress = 10;
   
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -73,6 +72,7 @@ export const scrapeTableData = async (url) => {
 
 
   await browser.close();
+  // writeToTXT(tableData)
 };
 
 async function waitForTableToLoad(page) {
@@ -89,12 +89,4 @@ async function waitForRowsToLoad(page, rowCount) {
     const childrenAmount = tbody.children.length;
     return childrenAmount === rowCount;
   }, {}, rowCount);
-}
-
-async function writeToTXT(content) {
-  try {
-    await writeFile('output/test.txt', content + '\n', { flag: 'a' });
-  } catch (err) {
-    console.log(err);
-  }
 }
