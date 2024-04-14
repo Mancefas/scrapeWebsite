@@ -1,15 +1,18 @@
 import puppeteer from "puppeteer";
+import { writeFileSync, appendFile } from "fs";
+import { writeFile } from "fs/promises";
 
 export const scrapeTableData = async (url) => {
   const tableData = [];
-  const pressingNextButton = 55;
+  const nextButtonToPress = 1;
   
   const browser = await puppeteer.launch({
     headless: 'new',
     timeout: 0,
     // headless: false,
     // need browser size, because website makes 'display: none' on some items if not wide enough
-    defaultViewport: { width: 1200, height: 800 }
+    defaultViewport: { width: 1200, height: 800 },
+    timeout: 0
   });
   
   // Open a new page
@@ -30,13 +33,19 @@ export const scrapeTableData = async (url) => {
   await page.$('[name="datatableOperadores_length"]')
   await page.select('[name="datatableOperadores_length"]', '100');
 
+  await page.waitForFunction(() => {
+    const tbody = document.querySelector("#datatableOperadores tbody");
+    const childrenAmount = tbody.children.length;
+    return childrenAmount === 100;
+  });
+
   // const isNextDisabled = await page.evaluate(() => {
   //   const nextButton = document.querySelector('a.paginate_button.next.disabled');
   //   return nextButton !== null;
   // });
 
   // while (!isNextDisabled) {
-  for (let i = 0; i < pressingNextButton; i++) {
+  for (let i = 0; i < nextButtonToPress; i++) {
     //wait for 100 rows to load
     await page.waitForFunction(() => {
       const tbody = document.querySelector("#datatableOperadores tbody");
@@ -49,10 +58,13 @@ export const scrapeTableData = async (url) => {
     const table = document.querySelector("tbody");
 
     return Array.from(table.children).map(row => row.innerText);
-  });
+    });
 
+    for (const row of tableRows) {
+      await writeToTXT(row);
+    }
     //push new data to array
-    tableData.push(...tableRows.flat());
+    // tableData.push(...tableRows);
 
     //press next button again
     await page.$('#datatableOperadores_next')
@@ -61,7 +73,28 @@ export const scrapeTableData = async (url) => {
 
 
   await browser.close();
-
-  // return data as array
-  return tableRows
 };
+
+async function waitForTableToLoad(page) {
+  await page.waitForFunction(() => {
+    const tbody = document.querySelector("#datatableOperadores tbody");
+    const childrenAmount = tbody.children.length;
+    return childrenAmount !== 0;
+  });
+}
+
+async function waitForRowsToLoad(page, rowCount) {
+  await page.waitForFunction((rowCount) => {
+    const tbody = document.querySelector("#datatableOperadores tbody");
+    const childrenAmount = tbody.children.length;
+    return childrenAmount === rowCount;
+  }, {}, rowCount);
+}
+
+async function writeToTXT(content) {
+  try {
+    await writeFile('output/test.txt', content + '\n', { flag: 'a' });
+  } catch (err) {
+    console.log(err);
+  }
+}
