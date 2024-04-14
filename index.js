@@ -1,4 +1,4 @@
-import { scrapeTableData } from "./functions/scrapeTableData.js"
-import 'dotenv/config' 
+import { scrapeTableData } from './functions/scrapeTableData.js';
+import 'dotenv/config';
 
-scrapeTableData(process.env.WEBSITE_WITH_TABLE)
+scrapeTableData(process.env.WEBSITE_WITH_TABLE);

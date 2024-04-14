@@ -1,10 +1,9 @@
-import { writeFile } from "fs/promises";
-
+import { writeFile } from 'fs/promises';
 
 export async function writeToTXT(content) {
     try {
-      await writeFile('output/test.txt', content + '\n', { flag: 'a' });
+        await writeFile('output/test.txt', content + '\n', { flag: 'a' });
     } catch (err) {
-      console.log(err);
+        console.log(err);
     }
-  }
+}
