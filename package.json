@@ -2,8 +2,9 @@
     "name": "scrapewebsite",
     "version": "1.0.0",
     "description": "Scraping some table from website",
-    "main": "index.js",
+    "main": "app.js",
     "scripts": {
+        "start": "npx tsc && node app.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -11,8 +12,11 @@
     "license": "ISC",
     "dependencies": {
         "dotenv": "^16.4.5",
-        "puppeteer": "^19.11.1"
+        "puppeteer": "^22.6.4"
     },
     "type": "module",
-    "types": "module"
+    "types": "module",
+    "devDependencies": {
+        "typescript": "^5.4.5"
+    }
 }

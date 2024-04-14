@@ -3,6 +3,6 @@ import { writeToTXT } from './functions/writeTotxtFile.js';
 import 'dotenv/config';
 
 (async () => {
-    const tableData = await scrapeTableData(process.env.WEBSITE_WITH_TABLE);
+    const tableData = await scrapeTableData(process.env.WEBSITE_WITH_TABLE ?? '', 2);
     writeToTXT(tableData);
 })();
