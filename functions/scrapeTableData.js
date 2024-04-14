@@ -1,23 +1,23 @@
 import puppeteer from 'puppeteer';
-import { writeToTXT } from './writeTotxtFile.js';
 
 export const scrapeTableData = async (url) => {
     const tableData = [];
-    const nextButtonToPress = 4;
+    const nextButtonToPress = 2;
     let previousContent = null;
     const startTime = new Date();
 
     const browser = await puppeteer.launch({
-        headless: 'new',
-        // timeout: 0,
-        // headless: false,
+        // headless: 'new',
+        // if dont need to check how it is working, can use headless: 'new'
+        headless: false,
         // need browser size, because website makes 'display: none' on some items if not wide enough
         defaultViewport: { width: 1200, height: 800 },
-        // timeout: 0
+        protocolTimeout: 0,
     });
 
     // Open a new page
     const page = await browser.newPage();
+    await page.setDefaultTimeout(0);
 
     // wait for table to get some data
     await page.goto(url, {
@@ -40,12 +40,6 @@ export const scrapeTableData = async (url) => {
     );
     previousContent = initialContent;
 
-    // const isNextDisabled = await page.evaluate(() => {
-    //   const nextButton = document.querySelector('a.paginate_button.next.disabled');
-    //   return nextButton !== null;
-    // });
-    // while (!isNextDisabled) {
-    // if(done) {
     for (let i = 0; i < nextButtonToPress - 1; i++) {
         if (i === 0) {
             const tableRows = await page.evaluate(() => {
@@ -54,9 +48,6 @@ export const scrapeTableData = async (url) => {
                 return Array.from(table.children).map((row) => row.innerText);
             });
             tableData.push(...tableRows);
-            // for (const row of tableRows) {
-            //     await writeToTXT(row);
-            // }
 
             await page.waitForSelector('#datatableOperadores_next');
             await page.click('#datatableOperadores_next');
@@ -86,26 +77,16 @@ export const scrapeTableData = async (url) => {
             return Array.from(table.children).map((row) => row.innerText);
         });
 
-        // for (const row of tableRows) {
-        //     await writeToTXT(row);
-        // }
         tableData.push(...tableRows);
 
         //press next button again
         await page.waitForSelector('#datatableOperadores_next');
         await page.click('#datatableOperadores_next');
     }
-    // }
 
     await browser.close();
 
-    // for (const row of tableData) {
-    //     await writeToTXT(row);
-    // }
-    // writeToTXT(tableData)
-    // Record the end time
     const endTime = new Date();
-
     // Calculate the difference in milliseconds
     const executionTime = endTime - startTime;
 
