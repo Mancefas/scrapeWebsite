@@ -3,7 +3,7 @@ import { writeToTXT } from "./writeTotxtFile.js";
 
 export const scrapeTableData = async (url) => {
   const tableData = [];
-  const nextButtonToPress = 10;
+  const nextButtonToPress = 3;
   
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -32,11 +32,6 @@ export const scrapeTableData = async (url) => {
   await page.$('[name="datatableOperadores_length"]')
   await page.select('[name="datatableOperadores_length"]', '100');
 
-  await page.waitForFunction(() => {
-    const tbody = document.querySelector("#datatableOperadores tbody");
-    const childrenAmount = tbody.children.length;
-    return childrenAmount === 100;
-  });
 
   // const isNextDisabled = await page.evaluate(() => {
   //   const nextButton = document.querySelector('a.paginate_button.next.disabled');
